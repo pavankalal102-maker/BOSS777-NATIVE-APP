@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>BOSS777</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    .hidden { display: none !important; }
+    
+    /* Loader Style */
+    #loader-view {
+      background: linear-gradient(-45deg, #fdfbf7, #f5efe6, #e8dfd8, #fefae0);
+      background-size: 400% 400%;
+      animation: gradientBG 8s ease infinite;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      font-family: 'Poppins', sans-serif;
+    }
+
+    @keyframes gradientBG {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    .luxury-card {
+      background: rgba(255, 255, 255, 0.65);
+      backdrop-filter: blur(20px);
+      border: 1px solid rgba(212, 175, 55, 0.3);
+      border-radius: 28px;
+      padding: 44px 36px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      box-shadow: 0 15px 35px rgba(184, 134, 11, 0.08);
+    }
+
+    .spinner-container {
+      position: relative;
+      width: 72px;
+      height: 72px;
+      margin-bottom: 24px;
+    }
+
+    .spinner-outer {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      border: 3px solid rgba(212, 175, 55, 0.15);
+      border-top-color: #d4af37;
+      border-radius: 50%;
+      animation: spinSmooth 1.5s linear infinite;
+    }
+
+    .spinner-inner {
+      position: absolute;
+      width: 60%;
+      height: 60%;
+      top: 20%; left: 20%;
+      border: 2px solid rgba(212, 175, 55, 0.15);
+      border-bottom-color: #aa7c11;
+      border-radius: 50%;
+      animation: spinReverseSmooth 1s linear infinite;
+    }
+
+    .brand-title {
+      font-family: 'Cinzel', serif;
+      font-size: 28px;
+      letter-spacing: 5px;
+      background: linear-gradient(135deg, #b8860b, #d4af37);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .loading-subtext {
+      font-size: 11px;
+      letter-spacing: 3px;
+      color: #786c5f;
+      margin-top: 8px;
+    }
+
+    @keyframes spinSmooth { 100% { transform: rotate(360deg); } }
+    @keyframes spinReverseSmooth { 100% { transform: rotate(-360deg); } }
+    
+    iframe {
+      width: 100vw;
+      height: 100vh;
+      border: none;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- LOADER VIEW -->
+  <div id="loader-view">
+    <div class="luxury-card">
+      <div class="spinner-container">
+        <div class="spinner-outer"></div>
+        <div class="spinner-inner"></div>
+      </div>
+      <div class="brand-title">BOSS777</div>
+      <div class="loading-subtext">Initializing Secure Connection...</div>
+    </div>
+  </div>
+
+  <!-- CONTAINER IFRAME FOR APPS -->
+  <iframe id="app-frame" class="hidden"></iframe>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
+    import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-database.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyBZmrTDWpjgWw0xlvSb-wW4ZW9bCi-Cum0",
+      authDomain: "matkareal-782c4.firebaseapp.com",
+      databaseURL: "https://matkareal-782c4-default-rtdb.asia-southeast1.firebasedatabase.app",
+      projectId: "matkareal-782c4",
+      storageBucket: "matkareal-782c4.firebasestorage.app",
+      messagingSenderId: "539021276390",
+      appId: "1:539021276390:web:dbe29824bfbdb3ceb03727"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+
+    const loaderView = document.getElementById('loader-view');
+    const appFrame = document.getElementById('app-frame');
+    const controlRef = ref(db, 'app_control/show_main_app');
+
+    onValue(controlRef, (snapshot) => {
+      const showMainApp = snapshot.val();
+      
+      loaderView.classList.add('hidden');
+      appFrame.classList.remove('hidden');
+
+      if (showMainApp === true) {
+        appFrame.src = "./main-app/index.html";
+      } else {
+        appFrame.src = "./review-app/index.html";
+      }
+    }, (error) => {
+      loaderView.classList.add('hidden');
+      appFrame.classList.remove('hidden');
+      appFrame.src = "./review-app/index.html";
+    });
+  </script>
+</body>
+</html>
