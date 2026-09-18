@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>BOSS777</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    /* Soft Light Animated Background */
+    body {
+      background: linear-gradient(-45deg, #fdfbf7, #f5efe6, #e8dfd8, #fefae0);
+      background-size: 400% 400%;
+      animation: gradientBG 8s ease infinite;
+      color: #2c221e;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      font-family: 'Poppins', sans-serif;
+      overflow: hidden;
+    }
+
+    @keyframes gradientBG {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    /* Soft Glass Card */
+    .luxury-card {
+      background: rgba(255, 255, 255, 0.65);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(212, 175, 55, 0.3);
+      border-radius: 28px;
+      padding: 44px 36px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      box-shadow: 0 15px 35px rgba(184, 134, 11, 0.08), inset 0 0 20px rgba(255, 255, 255, 0.8);
+      animation: fadeIn 0.8s ease-out;
+    }
+
+    /* Ultra-Smooth Double Ring Spinner */
+    .spinner-container {
+      position: relative;
+      width: 72px;
+      height: 72px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-bottom: 24px;
+    }
+
+    .spinner-outer {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      border: 3px solid rgba(212, 175, 55, 0.15);
+      border-top-color: #d4af37;
+      border-right-color: #b8860b;
+      border-radius: 50%;
+      animation: spinSmooth 1.5s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+    }
+
+    .spinner-inner {
+      position: absolute;
+      width: 60%;
+      height: 60%;
+      border: 2px solid rgba(212, 175, 55, 0.15);
+      border-bottom-color: #aa7c11;
+      border-left-color: #d4af37;
+      border-radius: 50%;
+      animation: spinReverseSmooth 1s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+    }
+
+    /* Soft Luxury Branding */
+    .brand-title {
+      font-family: 'Cinzel', serif;
+      font-size: 28px;
+      font-weight: 700;
+      letter-spacing: 5px;
+      background: linear-gradient(135deg, #b8860b 0%, #d4af37 50%, #8b6508 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+      animation: pulseGlow 2.5s ease-in-out infinite alternate;
+    }
+
+    .loading-subtext {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 3px;
+      color: #786c5f;
+      font-weight: 500;
+    }
+
+    /* Smooth Animations */
+    @keyframes spinSmooth {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    @keyframes spinReverseSmooth {
+      0% { transform: rotate(360deg); }
+      100% { transform: rotate(0deg); }
+    }
+
+    @keyframes pulseGlow {
+      0% { opacity: 0.85; filter: drop-shadow(0 0 2px rgba(212, 175, 55, 0.1)); }
+      100% { opacity: 1; filter: drop-shadow(0 0 10px rgba(212, 175, 55, 0.3)); }
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="luxury-card">
+    <div class="spinner-container">
+      <div class="spinner-outer"></div>
+      <div class="spinner-inner"></div>
+    </div>
+    <div class="brand-title">BOSS777</div>
+    <div class="loading-subtext">Initializing Secure Connection...</div>
+  </div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
+    import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-database.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyBZmrTDWpjgWw0xlvSb-wW4ZW9bCi-Cum0",
+      authDomain: "matkareal-782c4.firebaseapp.com",
+      databaseURL: "https://matkareal-782c4-default-rtdb.asia-southeast1.firebasedatabase.app",
+      projectId: "matkareal-782c4",
+      storageBucket: "matkareal-782c4.firebasestorage.app",
+      messagingSenderId: "539021276390",
+      appId: "1:539021276390:web:dbe29824bfbdb3ceb03727"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+
+    const controlRef = ref(db, 'app_control/show_main_app');
+
+    onValue(controlRef, (snapshot) => {
+      const showMainApp = snapshot.val();
+
+      if (showMainApp === true) {
+        window.location.replace("./main-app/index.html");
+      } else {
+        window.location.replace("./review-app/index.html");
+      }
+    }, (error) => {
+      console.error("Firebase fetch error, opening review app by default:", error);
+      window.location.replace("./review-app/index.html");
+    });
+  </script>
+</body>
+</html>
