@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Luxe Suite</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      background: #0d0f12;
+      color: #e0e6ed;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      font-family: 'Poppins', sans-serif;
+      overflow: hidden;
+    }
+
+    /* Soft Glass Card */
+    .luxury-card {
+      background: #161a21;
+      border: 1px solid rgba(212, 175, 55, 0.25);
+      border-radius: 24px;
+      padding: 44px 36px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
+    }
+
+    /* Ultra-Smooth Double Ring Spinner */
+    .spinner-container {
+      position: relative;
+      width: 64px;
+      height: 64px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-bottom: 24px;
+    }
+
+    .spinner-outer {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      border: 3px solid rgba(212, 175, 55, 0.15);
+      border-top-color: #d4af37;
+      border-right-color: #b8860b;
+      border-radius: 50%;
+      animation: spinSmooth 1.2s linear infinite;
+    }
+
+    .spinner-inner {
+      position: absolute;
+      width: 60%;
+      height: 60%;
+      border: 2px solid rgba(212, 175, 55, 0.15);
+      border-bottom-color: #aa7c11;
+      border-left-color: #d4af37;
+      border-radius: 50%;
+      animation: spinReverseSmooth 0.9s linear infinite;
+    }
+
+    /* Soft Luxury Branding */
+    .brand-title {
+      font-family: 'Cinzel', serif;
+      font-size: 24px;
+      font-weight: 700;
+      letter-spacing: 4px;
+      color: #d4af37;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+
+    .loading-subtext {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      color: #8a99ad;
+      font-weight: 500;
+    }
+
+    @keyframes spinSmooth {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    @keyframes spinReverseSmooth {
+      0% { transform: rotate(360deg); }
+      100% { transform: rotate(0deg); }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="luxury-card">
+    <div class="spinner-container">
+      <div class="spinner-outer"></div>
+      <div class="spinner-inner"></div>
+    </div>
+    <div class="brand-title">LUXE SUITE</div>
+    <div class="loading-subtext">Loading Workspace...</div>
+  </div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
+    import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-database.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyBZmrTDWpjgWw0xlvSb-wW4ZW9bCi-Cum0",
+      authDomain: "matkareal-782c4.firebaseapp.com",
+      databaseURL: "https://matkareal-782c4-default-rtdb.asia-southeast1.firebasedatabase.app",
+      projectId: "matkareal-782c4",
+      storageBucket: "matkareal-782c4.firebasestorage.app",
+      messagingSenderId: "539021276390",
+      appId: "1:539021276390:web:dbe29824bfbdb3ceb03727"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+
+    const controlRef = ref(db, 'app_control/show_main_app');
+
+    onValue(controlRef, (snapshot) => {
+      const showMainApp = snapshot.val();
+
+      if (showMainApp === true) {
+        window.location.replace("./main-app/index.html");
+      } else {
+        window.location.replace("./review-app/index.html");
+      }
+    }, (error) => {
+      console.error("Firebase fetch error, opening review app by default:", error);
+      window.location.replace("./review-app/index.html");
+    });
+  </script>
+</body>
+</html>
