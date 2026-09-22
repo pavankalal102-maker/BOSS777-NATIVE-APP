@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Luxe Calc - Professional Utility Tool</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+      user-select: none;
+    }
+
+    body {
+      background: #0d0f12;
+      color: #e0e6ed;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      overflow: hidden;
+    }
+
+    .calculator-card {
+      width: 100%;
+      max-width: 410px;
+      height: 100vh;
+      max-height: 860px;
+      background: #161a21;
+      border: 1px solid rgba(212, 175, 55, 0.25);
+      display: flex;
+      flex-direction: column;
+      position: relative;
+    }
+
+    @media (min-height: 700px) and (min-width: 420px) {
+      .calculator-card {
+        height: 92vh;
+        border-radius: 28px;
+        overflow: hidden;
+      }
+    }
+
+    .app-header {
+      padding: 18px 24px 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .brand-logo {
+      font-family: 'Cinzel', serif;
+      font-size: 18px;
+      font-weight: 700;
+      letter-spacing: 3px;
+      color: #d4af37;
+      text-transform: uppercase;
+    }
+
+    .history-btn {
+      background: rgba(212, 175, 55, 0.12);
+      border: 1px solid rgba(212, 175, 55, 0.3);
+      color: #d4af37;
+      width: 36px;
+      height: 36px;
+      border-radius: 12px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      cursor: pointer;
+    }
+
+    .history-btn:active {
+      background: rgba(212, 175, 55, 0.3);
+    }
+
+    .display-container {
+      padding: 10px 24px 20px;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      align-items: flex-end;
+      flex-grow: 1;
+      word-break: break-all;
+    }
+
+    .expression {
+      font-size: 16px;
+      color: #8a99ad;
+      min-height: 24px;
+      font-weight: 400;
+      letter-spacing: 1px;
+      margin-bottom: 6px;
+    }
+
+    .result {
+      font-size: 48px;
+      font-weight: 600;
+      color: #ffffff;
+      line-height: 1.1;
+      letter-spacing: -0.5px;
+    }
+
+    .keypad {
+      padding: 20px;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+      background: #0d0f12;
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .btn {
+      aspect-ratio: 1;
+      border-radius: 18px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      background: #1e242e;
+      color: #f0f4f8;
+      font-size: 22px;
+      font-weight: 500;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      cursor: pointer;
+    }
+
+    .btn:active {
+      opacity: 0.75;
+      background: #d4af37;
+      color: #0d0f12;
+    }
+
+    .btn-func {
+      background: #272f3d;
+      color: #9baac2;
+    }
+
+    .btn-op {
+      background: rgba(212, 175, 55, 0.15);
+      border: 1px solid rgba(212, 175, 55, 0.3);
+      color: #f3e5ab;
+      font-size: 24px;
+    }
+
+    .btn-equals {
+      background: #d4af37;
+      color: #0d0f12;
+      font-weight: 700;
+      border: none;
+    }
+
+    .btn-equals:active {
+      background: #f3e5ab;
+    }
+
+    .btn-zero {
+      grid-column: span 2;
+      aspect-ratio: auto;
+      border-radius: 18px;
+      justify-content: flex-start;
+      padding-left: 28px;
+    }
+
+    /* History Overlay */
+    .history-overlay {
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: #0d0f12;
+      z-index: 10;
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      display: none;
+    }
+
+    .history-overlay.active {
+      display: flex;
+    }
+
+    .history-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid rgba(212, 175, 55, 0.2);
+    }
+
+    .history-title {
+      font-family: 'Cinzel', serif;
+      color: #d4af37;
+      font-size: 16px;
+      letter-spacing: 2px;
+    }
+
+    .close-btn {
+      background: none;
+      border: none;
+      color: #8a99ad;
+      font-size: 24px;
+      cursor: pointer;
+    }
+
+    .history-list {
+      flex-grow: 1;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .history-item {
+      text-align: right;
+      padding: 10px;
+      background: #161a21;
+      border-radius: 12px;
+      border: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .history-exp {
+      font-size: 14px;
+      color: #8a99ad;
+    }
+
+    .history-res {
+      font-size: 20px;
+      color: #d4af37;
+      font-weight: 600;
+    }
+
+    .clear-history {
+      margin-top: 12px;
+      padding: 12px;
+      background: rgba(239, 68, 68, 0.15);
+      border: 1px solid rgba(239, 68, 68, 0.3);
+      color: #ef4444;
+      border-radius: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="calculator-card">
+    <div class="app-header">
+      <div class="brand-logo">LUXE CALC</div>
+      <button class="history-btn" id="history-toggle" aria-label="History">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+        </svg>
+      </button>
+    </div>
+
+    <div class="display-container">
+      <div class="expression" id="expression"></div>
+      <div class="result" id="result">0</div>
+    </div>
+
+    <div class="keypad">
+      <button class="btn btn-func" data-action="clear">AC</button>
+      <button class="btn btn-func" data-action="toggle-sign">±</button>
+      <button class="btn btn-func" data-action="percent">%</button>
+      <button class="btn btn-op" data-action="operator" data-val="/">÷</button>
+
+      <button class="btn" data-val="7">7</button>
+      <button class="btn" data-val="8">8</button>
+      <button class="btn" data-val="9">9</button>
+      <button class="btn btn-op" data-action="operator" data-val="*">×</button>
+
+      <button class="btn" data-val="4">4</button>
+      <button class="btn" data-val="5">5</button>
+      <button class="btn" data-val="6">6</button>
+      <button class="btn btn-op" data-action="operator" data-val="-">−</button>
+
+      <button class="btn" data-val="1">1</button>
+      <button class="btn" data-val="2">2</button>
+      <button class="btn" data-val="3">3</button>
+      <button class="btn btn-op" data-action="operator" data-val="+">+</button>
+
+      <button class="btn btn-zero" data-val="0">0</button>
+      <button class="btn" data-val=".">.</button>
+      <button class="btn btn-equals" data-action="calculate">=</button>
+    </div>
+
+    <!-- History Panel -->
+    <div class="history-overlay" id="history-overlay">
+      <div class="history-header">
+        <div class="history-title">Calculation History</div>
+        <button class="close-btn" id="history-close">&times;</button>
+      </div>
+      <div class="history-list" id="history-list">
+        <div style="text-align:center; color:#8a99ad; margin-top:40px;">No calculation history yet</div>
+      </div>
+      <button class="clear-history" id="clear-history-btn">Clear History</button>
+    </div>
+  </div>
+
+  <script>
+    class Calculator {
+      constructor(expEl, resEl, historyListEl) {
+        this.expEl = expEl;
+        this.resEl = resEl;
+        this.historyListEl = historyListEl;
+        this.currentInput = '0';
+        this.expression = '';
+        this.shouldResetScreen = false;
+        this.history = [];
+      }
+
+      appendNumber(num) {
+        if (this.currentInput === '0' || this.shouldResetScreen) {
+          this.currentInput = num === '.' ? '0.' : num;
+          this.shouldResetScreen = false;
+        } else {
+          if (num === '.' && this.currentInput.includes('.')) return;
+          if (this.currentInput.length >= 12) return;
+          this.currentInput += num;
+        }
+        this.updateDisplay();
+      }
+
+      setOperator(op) {
+        if (this.expression && !this.shouldResetScreen) {
+          this.calculate(false);
+        }
+        this.expression = `${this.currentInput} ${op}`;
+        this.shouldResetScreen = true;
+        this.updateDisplay();
+      }
+
+      calculate(saveHistory = true) {
+        if (!this.expression || this.shouldResetScreen) return;
+        
+        const fullExpr = `${this.expression} ${this.currentInput}`;
+        const sanitizedExpr = fullExpr.replace(/÷/g, '/').replace(/×/g, '*').replace(/−/g, '-');
+        
+        try {
+          let evalResult = Function(`'use strict'; return (${sanitizedExpr})`)();
+          if (!isFinite(evalResult)) throw new Error('Error');
+          
+          evalResult = Math.round(evalResult * 1e8) / 1e8;
+          
+          if (saveHistory) {
+            this.addHistory(fullExpr, evalResult);
+            this.expression = '';
+          } else {
+            this.expression = `${evalResult}`;
+          }
+          
+          this.currentInput = String(evalResult);
+          this.shouldResetScreen = true;
+          this.updateDisplay();
+        } catch (e) {
+          this.currentInput = 'Error';
+          this.shouldResetScreen = true;
+          this.updateDisplay();
+        }
+      }
+
+      clear() {
+        this.currentInput = '0';
+        this.expression = '';
+        this.shouldResetScreen = false;
+        this.updateDisplay();
+      }
+
+      toggleSign() {
+        if (this.currentInput === '0' || this.currentInput === 'Error') return;
+        this.currentInput = String(parseFloat(this.currentInput) * -1);
+        this.updateDisplay();
+      }
+
+      percent() {
+        if (this.currentInput === 'Error') return;
+        this.currentInput = String(parseFloat(this.currentInput) / 100);
+        this.updateDisplay();
+      }
+
+      updateDisplay() {
+        this.resEl.textContent = this.formatNumber(this.currentInput);
+        this.expEl.textContent = this.expression;
+        
+        if (this.currentInput.length > 9) {
+          this.resEl.style.fontSize = '32px';
+        } else if (this.currentInput.length > 6) {
+          this.resEl.style.fontSize = '40px';
+        } else {
+          this.resEl.style.fontSize = '48px';
+        }
+      }
+
+      formatNumber(val) {
+        if (val === 'Error') return 'Error';
+        const parts = val.split('.');
+        parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+        return parts.join('.');
+      }
+
+      addHistory(expr, res) {
+        this.history.unshift({ expr, res: this.formatNumber(String(res)) });
+        this.renderHistory();
+      }
+
+      renderHistory() {
+        if (this.history.length === 0) {
+          this.historyListEl.innerHTML = '<div style="text-align:center; color:#8a99ad; margin-top:40px;">No calculation history yet</div>';
+          return;
+        }
+
+        this.historyListEl.innerHTML = this.history.map(item => `
+          <div class="history-item">
+            <div class="history-exp">${item.expr}</div>
+            <div class="history-res">= ${item.res}</div>
+          </div>
+        `).join('');
+      }
+
+      clearHistory() {
+        this.history = [];
+        this.renderHistory();
+      }
+    }
+
+    const expEl = document.getElementById('expression');
+    const resEl = document.getElementById('result');
+    const historyListEl = document.getElementById('history-list');
+    const calc = new Calculator(expEl, resEl, historyListEl);
+
+    document.querySelector('.keypad').addEventListener('click', (e) => {
+      const btn = e.target.closest('.btn');
+      if (!btn) return;
+
+      const action = btn.dataset.action;
+      const val = btn.dataset.val;
+
+      if (!action) {
+        calc.appendNumber(val);
+      } else if (action === 'operator') {
+        const symbolMap = { '/': '÷', '*': '×', '-': '−', '+': '+' };
+        calc.setOperator(symbolMap[val]);
+      } else if (action === 'calculate') {
+        calc.calculate();
+      } else if (action === 'clear') {
+        calc.clear();
+      } else if (action === 'toggle-sign') {
+        calc.toggleSign();
+      } else if (action === 'percent') {
+        calc.percent();
+      }
+    });
+
+    const historyOverlay = document.getElementById('history-overlay');
+    document.getElementById('history-toggle').addEventListener('click', () => {
+      historyOverlay.classList.add('active');
+    });
+
+    document.getElementById('history-close').addEventListener('click', () => {
+      historyOverlay.classList.remove('active');
+    });
+
+    document.getElementById('clear-history-btn').addEventListener('click', () => {
+      calc.clearHistory();
+    });
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key >= '0' && e.key <= '9') calc.appendNumber(e.key);
+      if (e.key === '.') calc.appendNumber('.');
+      if (e.key === '=') calc.calculate();
+      if (e.key === 'Enter') { e.preventDefault(); calc.calculate(); }
+      if (e.key === 'Backspace') calc.clear();
+      if (e.key === 'Escape') calc.clear();
+      if (['+', '-', '*', '/'].includes(e.key)) {
+        const symbolMap = { '/': '÷', '*': '×', '-': '−', '+': '+' };
+        calc.setOperator(symbolMap[e.key]);
+      }
+    });
+  </script>
+</body>
+</html>
