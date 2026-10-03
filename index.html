@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Luxe Suite</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;800&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-family: 'Poppins', sans-serif;
+      overflow: hidden;
+      background: #0d0f12;
+      transition: background 0.3s ease;
+    }
+
+    /* Common Card Layout */
+    .splash-card {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+    }
+
+    /* ----------------------------------------------------
+       1. REVIEW APP SPLASH SCREEN (2 sec - Live Gradient)
+       ---------------------------------------------------- */
+    body.review-theme {
+      background: linear-gradient(120deg, #fbf2dc, #f3e0b2, #e7ce88, #fbf2dc);
+      background-size: 300% 300%;
+      animation: smoothGradient 10s ease-in-out infinite;
+    }
+
+    @keyframes smoothGradient {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    .review-theme .luxury-card {
+      background: #fdfbf5;
+      border: 2px solid #d4af37;
+      border-radius: 28px;
+      padding: 44px 36px;
+      box-shadow: 0 10px 30px rgba(180, 140, 40, 0.2);
+    }
+
+    .review-theme .brand-title {
+      font-family: 'Cinzel', serif;
+      font-size: 28px;
+      font-weight: 800;
+      letter-spacing: 3px;
+      color: #83630c;
+      margin-bottom: 6px;
+      animation: pulseTitle 1.5s ease-in-out infinite alternate;
+    }
+
+    .review-theme .loading-subtext {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      color: #615228;
+      font-weight: 600;
+    }
+
+    .review-theme .spinner-outer {
+      border: 3px solid rgba(212, 175, 55, 0.2);
+      border-top-color: #d4af37;
+      border-right-color: #83630c;
+    }
+
+    .review-theme .spinner-inner {
+      border: 2px solid rgba(212, 175, 55, 0.2);
+      border-bottom-color: #aa7c11;
+      border-left-color: #d4af37;
+    }
+
+    @keyframes pulseTitle {
+      0% { transform: scale(1); opacity: 0.95; }
+      100% { transform: scale(1.05); opacity: 1; }
+    }
+
+    /* ----------------------------------------------------
+       2. MAIN APP SPLASH SCREEN (1 sec - Pure White Theme)
+       ---------------------------------------------------- */
+    body.main-theme {
+      background: #ffffff;
+    }
+
+    .main-theme .luxury-card {
+      background: #ffffff;
+      border: none;
+      padding: 0;
+      box-shadow: none;
+    }
+
+    .main-theme .brand-title {
+      font-family: 'Cinzel', serif;
+      font-size: 24px;
+      font-weight: 700;
+      letter-spacing: 4px;
+      color: #1a1a1a;
+      margin-bottom: 6px;
+    }
+
+    .main-theme .loading-subtext {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      color: #888888;
+      font-weight: 500;
+    }
+
+    .main-theme .spinner-outer {
+      border: 3px solid rgba(0, 0, 0, 0.08);
+      border-top-color: #d4af37;
+      border-right-color: #1a1a1a;
+    }
+
+    .main-theme .spinner-inner {
+      border: 2px solid rgba(0, 0, 0, 0.08);
+      border-bottom-color: #d4af37;
+      border-left-color: #d4af37;
+    }
+
+    /* Ultra-Smooth Double Ring Spinner (Shared) */
+    .spinner-container {
+      position: relative;
+      width: 64px;
+      height: 64px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-bottom: 24px;
+    }
+
+    .spinner-outer {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      animation: spinSmooth 1.2s linear infinite;
+    }
+
+    .spinner-inner {
+      position: absolute;
+      width: 60%;
+      height: 60%;
+      border-radius: 50%;
+      animation: spinReverseSmooth 0.9s linear infinite;
+    }
+
+    @keyframes spinSmooth {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    @keyframes spinReverseSmooth {
+      0% { transform: rotate(360deg); }
+      100% { transform: rotate(0deg); }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="luxury-card splash-card">
+    <div class="spinner-container">
+      <div class="spinner-outer"></div>
+      <div class="spinner-inner"></div>
+    </div>
+    <div class="brand-title" id="brand-title">LUXE SUITE</div>
+    <div class="loading-subtext" id="loading-subtext">Loading Workspace...</div>
+  </div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
+    import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-database.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyBZmrTDWpjgWw0xlvSb-wW4ZW9bCi-Cum0",
+      authDomain: "matkareal-782c4.firebaseapp.com",
+      databaseURL: "https://matkareal-782c4-default-rtdb.asia-southeast1.firebasedatabase.app",
+      projectId: "matkareal-782c4",
+      storageBucket: "matkareal-782c4.firebasestorage.app",
+      messagingSenderId: "539021276390",
+      appId: "1:539021276390:web:dbe29824bfbdb3ceb03727"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+
+    const controlRef = ref(db, 'app_control/show_main_app');
+
+    let redirected = false; // Prevent multiple triggers
+
+    onValue(controlRef, (snapshot) => {
+      if (redirected) return;
+      redirected = true;
+
+      const showMainApp = snapshot.val();
+
+      if (showMainApp === true) {
+        // --- 1. MAIN APP: Pure White Theme (1 Second) ---
+        document.body.className = "main-theme";
+        document.getElementById("brand-title").textContent = "LUXE SUITE";
+        document.getElementById("loading-subtext").textContent = "Loading Application...";
+
+        setTimeout(() => {
+          window.location.replace("./main-app/index.html");
+        }, 1000);
+
+      } else {
+        // --- 2. REVIEW APP: Live Gradient Tic-Tac-Toe Theme (2 Seconds) ---
+        document.body.className = "review-theme";
+        document.getElementById("brand-title").textContent = "TIC TAC TOE";
+        document.getElementById("loading-subtext").textContent = "Starting Game Engine...";
+
+        setTimeout(() => {
+          window.location.replace("./review-app/index.html");
+        }, 1000);
+      }
+    }, (error) => {
+      console.error("Firebase fetch error, opening review app by default:", error);
+      if (redirected) return;
+      redirected = true;
+
+      document.body.className = "review-theme";
+      document.getElementById("brand-title").textContent = "TIC TAC TOE";
+      document.getElementById("loading-subtext").textContent = "Starting Game Engine...";
+
+      setTimeout(() => {
+        window.location.replace("./review-app/index.html");
+      }, 1000);
+    });
+  </script>
+</body>
+</html>
